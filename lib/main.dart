@@ -1,6 +1,7 @@
 import 'package:capstoneapp/screen/Log-in-out/firstscreen.dart';
 import 'package:capstoneapp/screen/Log-in-out/registerpage.dart';
 import 'package:capstoneapp/screen/collectorside/collectorHome.dart';
+import 'package:capstoneapp/screen/userside/userHome.dart';
 import 'package:capstoneapp/services/auth/authservice.dart';
 import 'package:capstoneapp/services/auth/loginornot.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -45,8 +46,8 @@ class _MyAppState extends State<MyApp> {
             useMaterial3: true,
           ),
            
-          // home: RegisterScreen(onTap: () {  },),
-          home: const HomeScreen(),
+          // home: UserHomeScreen(),
+          home: const LoginNaba(),
           debugShowCheckedModeBanner: false,
         );
       },

@@ -35,23 +35,23 @@ class _FormScreenState extends State<FormScreen> {
   final Map<String, String> collectionPointsMap =
       {}; // Map to hold cp_name and cp_address
 
-  Future<void> fetchCollectionPoints() async {
-    try {
-      final supabase = Supabase.instance.client;
-      final response =
-          await supabase.from('collection_point').select('cp_name, cp_address');
-      if (response != null) {
-        setState(() {
-          collectionPointsMap.addAll(
-            Map.fromIterable(response,
-                key: (point) => point['cp_name'], // cp_name as key
-                value: (point) => point['cp_address'] // cp_address as value
-                ),
-          );
-        });
-      }
-    } catch (e) {
-      // Handle any errors here
+ Future<void> fetchCollectionPoints() async {
+  try {
+    final supabase = Supabase.instance.client;
+    final response =
+        await supabase.from('collection_point').select('cp_name, cp_address');
+    if (response != null && mounted) {
+      setState(() {
+        collectionPointsMap.addAll(
+          Map.fromIterable(response,
+              key: (point) => point['cp_name'], // cp_name as key
+              value: (point) => point['cp_address'] // cp_address as value
+              ),
+        );
+      });
+    }
+  } catch (e) {
+    if (mounted) {
       QuickAlert.show(
         context: navigatorKey.currentContext!,
         type: QuickAlertType.error,
@@ -61,6 +61,8 @@ class _FormScreenState extends State<FormScreen> {
       );
     }
   }
+}
+
 
   @override
   void dispose() {
@@ -69,26 +71,26 @@ class _FormScreenState extends State<FormScreen> {
     feedbackController.dispose();
     super.dispose();
   }
-
-  void fetchUserData() async {
-    final supabase = Supabase.instance.client;
-    final user = supabase.auth.currentUser;
-    if (user != null) {
-      final response = await supabase
-          .from('useraccount')
-          .select()
-          .eq('uid', user.id)
-          .single();
-      if (response != null) {
-        setState(() {
-          email = response['email'] ?? '';
-          firstname = response['firstname'] ?? '';
-          emailController.text = email;
-          firstnameController.text = firstname;
-        });
-      }
+Future<void> fetchUserData() async {
+  final supabase = Supabase.instance.client;
+  final user = supabase.auth.currentUser;
+  if (user != null) {
+    final response = await supabase
+        .from('useraccount')
+        .select()
+        .eq('uid', user.id)
+        .single();
+    if (response != null && mounted) {
+      setState(() {
+        email = response['email'] ?? '';
+        firstname = response['firstname'] ?? '';
+        emailController.text = email;
+        firstnameController.text = firstname;
+      });
     }
   }
+}
+
 
   Future<void> pickImage() async {
     try {
@@ -122,8 +124,9 @@ class _FormScreenState extends State<FormScreen> {
   bool _isUploading = false;
 
   Future<void> uploadImage(File file, {VoidCallback? onSuccess}) async {
-    try {
-      if (!(file.path.endsWith('.jpg') || file.path.endsWith('.png'))) {
+  try {
+    if (!(file.path.endsWith('.jpg') || file.path.endsWith('.png'))) {
+      if (mounted) {
         QuickAlert.show(
           context: navigatorKey.currentContext!,
           type: QuickAlertType.error,
@@ -132,28 +135,34 @@ class _FormScreenState extends State<FormScreen> {
           confirmBtnText: "OK",
           barrierDismissible: false,
         );
-        return;
       }
+      return;
+    }
 
-      final supabase = Supabase.instance.client;
-      final fileName = basename(file.path);
-      final fileBytes = await file.readAsBytes();
+    final supabase = Supabase.instance.client;
+    final fileName = basename(file.path);
+    final fileBytes = await file.readAsBytes();
 
-      _isUploading = true;
+    _isUploading = true;
+    if (mounted) {
       QuickAlert.show(
         context: navigatorKey.currentContext!,
         type: QuickAlertType.loading,
         text: "Uploading image...",
         barrierDismissible: false,
       );
+    }
 
-      await supabase.storage
-          .from('img')
-          .uploadBinary('feedback_img/$fileName', fileBytes);
+    await supabase.storage
+        .from('img')
+        .uploadBinary('feedback_img/$fileName', fileBytes);
 
-      _isUploading = false;
+    _isUploading = false;
+    if (mounted) {
       Navigator.pop(navigatorKey.currentContext!);
+    }
 
+    if (mounted) {
       QuickAlert.show(
         context: navigatorKey.currentContext!,
         type: QuickAlertType.success,
@@ -168,12 +177,16 @@ class _FormScreenState extends State<FormScreen> {
           }
         },
       );
-    } catch (e) {
-      if (_isUploading) {
-        _isUploading = false;
+    }
+  } catch (e) {
+    if (_isUploading) {
+      _isUploading = false;
+      if (mounted) {
         Navigator.pop(navigatorKey.currentContext!);
       }
+    }
 
+    if (mounted) {
       QuickAlert.show(
         context: navigatorKey.currentContext!,
         type: QuickAlertType.error,
@@ -184,6 +197,8 @@ class _FormScreenState extends State<FormScreen> {
       );
     }
   }
+}
+
 
   Future<void> submitForm() async {
   String firstnameto = firstnameController.text.trim();

@@ -78,8 +78,11 @@ class _MapScreenState extends State<MapScreen> {
     for (var point in response) {
       final String cpName = point['cp_name'];
       final String cpAddress = point['cp_address'];
-      final double cpLat = point['cp_lat'];
-      final double cpLong = point['cp_long'];
+      // final double cpLat = point['cp_lat'];
+      // final double cpLong = point['cp_long'];
+      final double cpLat = (point['cp_lat'] as num).toDouble();
+final double cpLong = (point['cp_long'] as num).toDouble();
+
       final String imageUrl = point['image_url'];
 
       // Add each collection point to the list and as a marker

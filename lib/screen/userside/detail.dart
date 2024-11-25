@@ -515,10 +515,11 @@ class _CollectionPointsScreenState extends State<CollectionPointsScreen> {
                               ? Image.network(
                                   imageUrl,
                                   height: 150,
+                                  width: 120,
                                   fit: BoxFit.cover,
                                 )
                               : Container(
-                                  height: 150,
+                                  height: 120,
                                   color: Colors.grey,
                                   child: Center(
                                     child: Text(
@@ -559,7 +560,7 @@ class _CollectionPointsScreenState extends State<CollectionPointsScreen> {
                                   ),
                                 ],
                               ),
-
+                    
                               SizedBox(height: 5.0),
                               // Display dynamic message based on status
                               Text(

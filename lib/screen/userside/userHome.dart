@@ -1,3 +1,4 @@
+import 'package:capstoneapp/screen/userside/checkcam.dart';
 import 'package:capstoneapp/screen/userside/form.dart';
 import 'package:capstoneapp/screen/map.dart';
 import 'package:capstoneapp/screen/userside/profile.dart';
@@ -18,7 +19,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
 
   final List<Widget> _pages = [
-    const RealTimeVideoContainer(),
+     CheckTimePage(),
     const FormScreen(),
     const MapScreen(),
     const UserProfileScreen(),                   
